@@ -10,33 +10,8 @@ fout = open ('beads.out', 'w')
 
 N = int(fin.readline())
 inBeads = fin.readline().rstrip()
-
-"""
-Create list of single bead and count
-"""
-beads = []
-counts = []
-curBead = ' '
-count = 1
-for bead in inBeads:
-  if curBead != bead:
-    if curBead != ' ':
-      beads.append(curBead)
-      counts.append(count)
-      curBead = bead
-      count = 1
-    else:
-      curBead = bead
-  else:
-    curBead = bead
-    count += 1
-beads.append(curBead)
-counts.append(count)
-
-print(beads)
-print(counts)
-
-print("len of bead2:", len(beads))
+print("inBeads=", inBeads)
+print("len(inBeads)=", len(inBeads))
 
 def singularBeads(beads):
   lastNonW = ''
@@ -61,88 +36,127 @@ def singleOccuNonW(beads):
         return False
   return True
 
-def findMax(beads, counts):
-  """
-  w is the special character
-  b and r are interchangeable
-
-  Scenarios are:
-  case1:	x[wx]*y : following many wx need to be combined into x, store at y
-  case2:	xwy : store x and then store w, store at y, later w will be considered to either x or y 
-  case3:	^wx : begin with w, w needs to be applied to x 
-  case4:	xw$ : end with w, w needs to be applied to x
-  Design:
-	lastNonW : remember x
-	count : counting how many x and several wx 
-	countLastW : remember w's count in case2 to be applied to y later
-  """
-  beads2 = []
-  counts2 = []
-  lastNonW = ''
-  countLastW = 0
-  index = 0
-  while index < len(beads):
-    if beads[index] != 'w':
-      if beads[index] == lastNonW:
-        count += counts[index] + countLastW
-        countLastW = 0
-      else:
-        if lastNonW != '':
-          beads2.append(lastNonW)
-          counts2.append(count)
-          if countLastW != 0:
-            beads2.append('w')
-            counts2.append(countLastW)
-        lastNonW = beads[index]
-        count = counts[index]
-        countLastW = 0
+def combineSameBeads(beads, counts):
+  newBeads = []
+  newCounts = []
+  count = counts[0]
+  for i in range(1, len(beads)):
+    if beads[i] == beads[i-1]:
+      count += counts[i]
     else:
-      countLastW = counts[index]
-    index += 1
-  beads2.append(lastNonW)
-  counts2.append(count)
+      newBeads.append(beads[i-1])
+      newCounts.append(count)
+      count = counts[i]
+  newBeads.append(beads[len(beads)-1])
+  newCounts.append(count)
+  return newBeads, newCounts
 
-  print("beads2=", beads2)
-  print("counts2=", counts2)
+def findMax(beads):
+  inBeads = beads + beads
 
-  maxBeads = 0
-  if len(counts2) == 1:
-    maxBeads = int(counts2[0] / 2)
-  else:
-  """
-  when current is x, the possible scenarios are wxwyw
-  """
-    index = 0
-    while index < len(counts2):
-      count = 0
-      if beads2[index] != 'w':
-        #index is in position of x
-        if index-1 >= 0 and beads2[index-1] == 'w':
-          count += counts2[index-1]
-        index2 = index + 1
-        if index2 < len(counts2) and beads2[index2] == 'w':
-          count += counts2[index2]
-          index2 += 1
-        if index2 >= len(counts2):
-          break
-        count += counts2[index2]
-        if index2+1 < len(counts2) and beads2[index2+1] == 'w':
-          count += counts2[index2+1]
-        count += counts2[index]
-        if maxBeads < count:
-          maxBeads = count
-        #index2 is in position of y
-        index = index2
+  beadList1 = []
+  countList1 = []
+  for i in range(0, len(inBeads)):
+    beadList1.append(inBeads[i])
+    countList1.append(1)
+  print("beadList1=", beadList1)
+  print("countList1=", countList1)
+
+  beadList2, countList2 = combineSameBeads(beadList1, countList1)
+  print("beadList2=", beadList2)
+  print("countList2=", countList2)
+
+  # change w to r/b if previous and after are the same
+  for i in range(1, len(beadList2) - 1):
+    if beadList2[i] == 'w' and beadList2[i-1] == beadList2[i+1]:
+      beadList2[i] = beadList2[i-1]
+
+  print("after beadList2=", beadList2)
+  print("after countList2=", countList2)
+
+  beadList3, countList3 = combineSameBeads(beadList2, countList2)
+  print("beadList3=", beadList3)
+  print("countList3=", countList3)
+
+  # adding w and 0 in between b and r if no w between b and r (to generalize next step handling)
+  beadList4 = []
+  countList4 = []
+  for i in range(len(beadList3) - 1):
+    beadList4.append(beadList3[i])
+    countList4.append(countList3[i])
+    if beadList3[i] != 'w' and beadList3[i+1] != 'w':
+      beadList4.append('w')
+      countList4.append(0)
+  beadList4.append(beadList3[len(beadList3) - 1])
+  countList4.append(countList3[len(beadList3) - 1])
+
+  print("beadList4= ", beadList4)
+  print("countList4= ", countList4)
+
+  # Move non-zero w's to neighboring b/r by comparing sum of previous 4 and next 4
+  for i in range(len(beadList4)):
+    if beadList4[i] == 'w':
+      if i == 0:
+        countList4[i+1] += countList4[i]
+        countList4[i] = 0
+        continue
       else:
-        index += 1
-    if maxBeads < count:
-      maxBeads = count
-  return maxBeads
+        if i >= 4:
+          lowIndex = i - 4
+        else:
+          lowIndex = 0
+        sumBefore = 0
+        for j in range(lowIndex, i):
+          sumBefore += countList4[j]
+      if i == len(beadList4) - 1:
+        countList4[i-1] += countList4[i]
+        countList4[i] = 0
+        continue
+      else:
+        if i + 4 < len(beadList4):
+          upIndex = i + 4
+        else:
+          upIndex = len(beadList4) - 1
+        sumAfter = 0
+        for j in range(i+1, upIndex + 1):
+          sumAfter += countList4[j]
+      if sumBefore > sumAfter:
+        countList4[i-1] += countList4[i]
+      else:
+        countList4[i+1] += countList4[i]
+      countList4[i] = 0
 
-if singularBeads(beads) or singleOccuNonW(beads):
+  print("after beadList4= ", beadList4)
+  print("after countList4= ", countList4)
+  print("after len beadList4= ", len(beadList4))
+
+  # remove w and 0
+  beadList5 = []
+  countList5 = []
+  for i in range(0, len(beadList4)):
+    if beadList4[i] != 'w':
+      beadList5.append(beadList4[i])
+      countList5.append(countList4[i])
+
+  print("beadList5=", beadList5)
+  print("countList5=", countList5)
+  result = 0
+  for i in range(0, len(beadList5) - 1):
+    count = countList5[i] + countList5[i+1]
+    if result < count:
+      result = count
+
+  print("result=", result)
+  return result
+
+if singularBeads(inBeads) or singleOccuNonW(inBeads):
   result = N
 else:
-  result = findMax(beads * 2, counts * 2)
+  result = findMax(inBeads)
+
+if result > N:
+  result = N
+
 fout.write(str(result) + '\n')
   
 fout.close()

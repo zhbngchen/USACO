@@ -1,0 +1,51 @@
+1. read input
+wwwbbrwrbrbrrbrbrwrwwrbwrwrrbwwwbbrwrbrbrrbrbrwrwwrbwrwrrb
+
+2. change to letterList (in order to reuse the same code in later stage) and countList with all 1s
+
+3. Simply to letterList and countList
+wbrwrbrbrbrbrwrwrbwrwrbwbrwrbrbrbrbrwrwrbwrwrb
+3211111121111112111112132111111211111121111121
+
+4. change 'w's to 'r'/'b' if previous and next are the same
+wbrrrbrbrbrbrrrrrbwrrrbbbrrrbrbrbrbrrrrrbwrrrb
+3211111121111112111112132111111211111121111121
+
+5. Redo step 3 (shrink list)
+wbrbrbrbrbrbwrbrbrbrbrbrbwrb
+3231112111611463111211161141
+
+5. insert "w and 0"s to the list in order to generalize coding
+wbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwb
+32030101010201010106011406030101010201010106011401
+
+6. Combine counts of w to neighbor that has bigger sum of 4 letters (previous 4 compared to next 4). Beginning and ending boundary cases need to be considered
+wbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwbwrwb
+05030101010201010106010506030101010201010106020401
+
+7. Remove "w and 0"
+brbrbrbrbrbrbrbrbrbrbrbrb
+5311121116156311121116241
+
+8. Find the max of 2 neighboring elements
+result: 11 with r:5 and b:6
+
+9. If the result from above is more than the original length, set the result to the original length
+
+10. The above solution does not apply to following scenarios:
+10.1 Only b or r 
+10.2 Either b or r does not exist (only b and w or only r and w)
+
+
+################### Misc. instructions below ################
+N = int(fin.readline())
+necklace = fin.readline().strip()
+
+letterList = ['w', 'b', 'r', ]
+numList =    [3,   2,   3,  
+
+numList.append()
+
+countList = [['w', 3], ['b', 2], 
+
+################################
