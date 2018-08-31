@@ -56,10 +56,7 @@ def checkCrypt(i, combo):
     #print(combo)
     x = combo[0:3]
     y1 = combo[3]
-    yhebeiebecbvdjkbdcivekrcdvclvbgvftibdktbli
-    eghhebeiebechkbjehvkthkubtlbkklbdccfcdvgifkt
-    eghhebeiebecvvbeklhivndncfkvvnthecduneifeklf
-    = combo[4]
+    y2 = combo[4]
     z = int(x) * int(y1 + y2)
     if isCrypt(z, 5, numbers) == False:
       return

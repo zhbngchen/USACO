@@ -14,9 +14,6 @@ import sys
 #################################################################
 
 ################### Sample Data and Solution ####################
-# Summary of solution: Merge gaps into boards from smallest gap size up 
-# till number of gaps is equal to M-1
-#
 # M = 4, S = 50, C = 18
 # 3, 4, 6, 8, 14, 15, 16, 17, 21, 25, 26, 27, 30, 31, 40, 41, 42, 43
 #
@@ -35,8 +32,6 @@ import sys
 # Now after removing one gap size 4, number of gaps is equal to M-1=3, and data are:
 #   total = 21, gaps are 6, 4, 9
 # Final answer is: total + M = 21 + 4 = 25
-#
-# Note: Easiest way of removing items from the list is to create a new and copy only left items
 #################################################################
 
 fin = open("barn1.in", "r")
@@ -57,7 +52,7 @@ for i in range(C-1):
 print(gaps)
 print(len(gaps))
 
-boards = gaps
+boards = ['B'] + gaps + ['B']
 print(boards)
 
 if C > M:
@@ -65,8 +60,9 @@ if C > M:
   gap = 1
   while C > M:
     newBoards = []
+    boardExist = False
     goalReached = False
-    for i in range(len(boards)):
+    for i in range(len(boards)-1):
       if boards[i] == gap:
         total += gap #count the removed ones only (without the final M boards)
         C -= 1
@@ -74,10 +70,18 @@ if C > M:
           goalReached = True
           break
 
+        # add 'B' if no previous/next 'B'
+        if boards[i-1] == 'B':
+          boardExist = True
+        elif boards[i+1] != gap and boards[i+1] != 'B' and boardExist == False:
+          newBoards.append('B')
       else:
-        newBoards.append(boards[i])
+        boardExist = False
+        if boards[i] != 'B' or boards[i+1] != 'B': #combine continuous 'B's
+          newBoards.append(boards[i])
     if goalReached == True:
       break
+    newBoards.append(boards[-1])
     print("gap=", gap, " C=", C, " total=", total, " newBoards=", newBoards)
     boards = newBoards
     gap += 1

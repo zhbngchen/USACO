@@ -1,0 +1,111 @@
+"""
+PROG: maze1
+LANG: PYTHON3
+"""
+# This solution works with smaller input size. But when the input size grows big, the recursion depth limit is reached and cannot work.
+
+import sys
+with open('maze1.in', 'r') as fin:
+  lines = fin.readlines()
+
+W, H = map(int, lines[0].split())
+
+# row    lines=2*row+2
+# 0      2 
+# 1      4
+# 2      6
+
+# col    lines=2*row+1
+# 0      1
+# 1      3
+# 2      5
+
+maze = []
+exits = []
+directions = ['N', 'E', 'S', 'W']
+boundaries = ['-', '|', '-', '|']
+
+# get the index of boundary with direction in original input 2-D array
+def getIndexFromInput(row, col, direction, numRows, numCols):
+  newRow = 2*row+2
+  newCol = 2*col+1
+  boundary = False
+  if direction == 'N':
+    newRow -= 1
+    if row == 0:
+      boundary = True
+  elif direction == 'E':
+    newCol += 1
+    if col == numCols-1:
+      boundary = True
+  elif direction == 'S':
+    newRow += 1
+    if row == numRows-1:
+      boundary = True
+  else: #direction == 'W'
+    newCol -= 1
+    if col == 0:
+      boundary = True
+  return newRow, newCol, boundary
+
+def getIndexNextMove(row, col, direction):
+  newRow = row
+  newCol = col
+  if direction == 'N':
+    newRow -= 1
+  elif direction == 'E':
+    newCol += 1
+  elif direction == 'S':
+    newRow += 1
+  else: #direction == 'W'
+    newCol -= 1
+  return newRow, newCol
+
+for row in range(H):
+  rowContent = []
+  for col in range(W):
+    itemContent = []
+    for i, direction in enumerate(directions):
+      boundaryRow, boundaryCol, boundary = getIndexFromInput(row, col, direction, H, W)
+      if lines[boundaryRow][boundaryCol] != boundaries[i]: #above
+        if boundary == True:
+          exits.append([row, col])
+        else:
+          itemContent.append(direction)
+    rowContent.append(itemContent)
+  maze.append(rowContent)
+
+def printArray(a):
+  for i in a:
+    print(i)
+
+print("maze:")
+printArray(maze)
+
+print("exits:", exits)
+
+def moveInMaze(maze, steps, row, col, stepCount):
+  directions = maze[row][col]
+  stepModified = False
+  if steps[row][col] == 0 or steps[row][col] > stepCount:
+    steps[row][col] = stepCount
+    stepModified = True
+  for direction in directions:
+    newRow, newCol = getIndexNextMove(row, col, direction)
+    if stepModified == True:
+      moveInMaze(maze, steps, newRow, newCol, stepCount + 1)
+
+steps = [[0]*W for _ in range(H)]
+for exit in exits:
+  moveInMaze(maze, steps, exit[0], exit[1], 1)
+  print("steps:")
+  printArray(steps)  
+
+result = 0
+for row in steps:
+  maxStep = max(row)
+  if result < maxStep:
+    result = maxStep
+
+with open('maze1.out', 'w') as fout:
+  fout.write(str(result) + '\n')
