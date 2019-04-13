@@ -16,7 +16,7 @@ listComet = list(cometName)
 productComet = 1
 productGroup = 1
 
-for c in cometName:
+# for c in cometName:
   productComet *= ord(c) - ord('A') + 1
 
 for c in groupName:

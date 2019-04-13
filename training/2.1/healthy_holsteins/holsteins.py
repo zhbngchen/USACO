@@ -41,10 +41,12 @@ def subtractList(list1, list2):
 found = False
 result = []
 dictComboLeft = {}
+print("G=", G)
 for i in range(1, G+1):
   combo = []
   genCombos = []
   generateCombo(0, -1, i, G, combo, genCombos)
+  print("i=", i, "genCombos=", genCombos)
   for genCombo in genCombos:
     if i == 1:
       subResult = subtractList(minRequirements, feeds[genCombo[0]])
