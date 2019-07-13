@@ -50,11 +50,11 @@ def checkCircle(start, parings):
   return True
 
 def checkParings(parings):
-  #print("parings=", parings)
   for i in range(N):
     if checkCircle(i, parings) == True:
+      print("parings=", parings)
       return True
-  #print("parings2=", parings)
+  print("parings2=", parings)
   return False
 
 parings = [-1] * N

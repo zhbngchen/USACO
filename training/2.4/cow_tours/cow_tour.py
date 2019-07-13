@@ -24,17 +24,7 @@ for i in range(N+1, 2*N + 1):
     row.append(int(lines[i][j]))
   matrix0.append(row)
 
-def printList(a):
-  for b in a:
-    print(b)
-
-print("N=", N)
-print("coordinates=")
-printList(coordinates)
-print("matrix0=")
-printList(matrix0)
-
-def findCoord(coord, i, j):
+def calcDistance(coord, i, j):
   d1 = coordinates[i][0] - coordinates[j][0]
   d2 = coordinates[i][1] - coordinates[j][1]
   d1 = d1*d1
@@ -48,73 +38,35 @@ for i in range(N):
     if matrix0[i][j] == 0:
       row.append(0)
     else:
-      row.append(findCoord(matrix0, i, j))
+      row.append(calcDistance(matrix0, i, j))
   distanceMatrix.append(row)
 
-print("distanceMatrix=")
-printList(distanceMatrix)
-
-modified = True
-while modified == True:
-  modified = False
+for k in range(N):
   for i in range(N):
     for j in range(N):
-      if distanceMatrix[i][j] == 0 and i != j:
-        for k in range(N):
-          if distanceMatrix[i][k] != 0 and distanceMatrix[k][j] != 0:
-            if distanceMatrix[i][j] == 0 or distanceMatrix[i][j] > (distanceMatrix[i][k] + distanceMatrix[k][j]):
-               distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j]
-               modified = True
-  if modified == True:
-    print("distanceMatrix=")
-    printList(distanceMatrix)
+      if i != j:
+        if distanceMatrix[i][k] != 0 and distanceMatrix[k][j] != 0:
+          if distanceMatrix[i][j] == 0 or distanceMatrix[i][j] > (distanceMatrix[i][k] + distanceMatrix[k][j]):
+            distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j]
 
-index = 1
-found = False
-while not found:
-  for i in range(index):
-    print("check index=", index, " i=", i, " found=", found)
-    if distanceMatrix[index][i] != 0:
-      break
-    if i == index-1:
-      print("change found to True")
-      found = True
-  index += 1
-    
-print("index=", index)
-
-diameter1 = 0
-diameter2 = 0
-maxDist = []
+maxFromPoints = [0 for i in range(N)]
 for i in range(N):
-  value = 0
+  maxPerRow = -1
   for j in range(N):
-    if distanceMatrix[i][j] > value:
-      value = distanceMatrix[i][j]
-    if i < index and j < index:
-      if distanceMatrix[i][j] > diameter1:
-        diameter1 = distanceMatrix[i][j]
-    else:
-      if distanceMatrix[i][j] > diameter2:
-        diameter2 = distanceMatrix[i][j]
-  maxDist.append(value)
+    if maxPerRow < distanceMatrix[i][j]:
+      maxPerRow = distanceMatrix[i][j]
+      maxFromPoints[i] = maxPerRow
 
-print("diameter1=", diameter1)
-print("diameter2=", diameter2)
-print("maxDist=", maxDist)
+result = sys.float_info.max
+for i in range(N):
+  for j in range(N):
+    if i != j and distanceMatrix[i][j] == 0:
+      curDistance = maxFromPoints[i] + maxFromPoints[j] + calcDistance(matrix0, i, j)
+      if curDistance < result:
+        result = curDistance
 
-result = 10000000
-print("result=", result)
-for i in range(index):
-  for j in range(index, N):
-    distIJ = findCoord(coordinates, i, j)
-    maxIJ = distIJ + maxDist[i] + maxDist[j]
-    if maxIJ < result:
-      result = maxIJ
+if result < max(maxFromPoints):
+  result = max(maxFromPoints)
 
-if result < max(diameter1, diameter2):
-  result = max(diamter1, diameter2)
-print("result=", result)
-
-fout = open ('cowtour.out', 'w')
-fout.close
+with open('cowtour.out', 'w') as fout:
+  fout.write(f'{result:.6f}' + '\n')

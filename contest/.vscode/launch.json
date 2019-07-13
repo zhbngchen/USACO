@@ -66,5 +66,5 @@
             "program": "${file}",
             "console": "externalTerminal"
         }
-    ]
+]
 }
