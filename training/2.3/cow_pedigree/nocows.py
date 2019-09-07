@@ -10,35 +10,35 @@ numNodes levelTree  numTrees
 1	        1	          1		O							  	T1
 
 3	        2	          1	 	O							  	T1
-		         	           / \						   / \
- 		                    O   O							T1 T1
+		         	           / \  						   / \
+ 		                      O   O		   					  T1 T1
 
-5	        3	          2  		O		        O					        T1	      T1
+5	        3	          2		  O		        O					       T1	    T1
 			                     / \	       / \					      / \      / \
-			                    O   O   	  O   O				      T3  T1    T1  T3
-			                   / \	           / \
-              			    O   O	          O   O
+			                    O   O   	  O   O				         T3  T1   T1  T3
+			                   / \	             / \
+              			      O   O	            O   O
 
-7	        3	          1	 	 O								T1
+7	        3	          1	 	 O							T1
 			                   /  \						   / \
 			                  O    O					  T3 T3
 			                 / \  / \
-			                O   O O   O
+			                O   O O  O
 
-	        4	          4		O		        O		        O		        O		      T1(2)	   T1(2)
+	        4	          4		O		    O		    O		    O		    T1(2)	T1(2)
 			                   / \	       / \	       / \	       / \ 	       / \     / \
 			                  O   O	      O   O	      O   O	      O   O	      T5 T1   T1  T5
-            			     / \	       / \ 	            / \	    	 / \
-            			    O   O	      O   O		         O   O		  O   O
-            			   / \		          / \	        / \		         / \
-            			  O   O		         O   O	     O   O		      O   O
+            			     / \	     / \ 	         / \	     / \
+            			    O   O	    O   O		    O   O		O   O
+            			   / \		       / \	       / \		       / \
+            			  O   O		      O   O	      O   O		      O   O
 
 9	        4	          6				
-                              T1(2)  T1(2)	  T1	   T1
+                              						T1(2)  T1(2)	T1	   T1
 											       / \     / \     / \     / \
 											      T3 T5   T5 T3   T1 T7   T7 T1  (T7 with numTree 3)
 
-	        5	          8			 T1(4)	T1(4)
+	        5	          8			 				T1(4)	T1(4)
 											       / \     / \
 											      T1  T7  T7 T1  (T7 with numTree 4)
 
@@ -116,7 +116,7 @@ print2d(dp)
 
 for i in range(3, N+1, 2):
   for j in range(2, K+1):
-    if i > 2 and dp[i][j-1] != 0 and dp[i][j-1] == dp[i][j-2]:
+    if dp[i][j-1] != 0 and dp[i][j-1] == dp[i][j-2]:
       dp[i][j] = dp[i][j-1]
     else:
       sumCounts = 0
